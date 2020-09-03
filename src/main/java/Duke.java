@@ -1,6 +1,8 @@
 import java.util.Scanner;
 
 public class Duke {
+    private static final Scanner SCANNER = new Scanner(System.in);
+
     private static final String COMMAND_BYE = "bye";
     private static final String COMMAND_LIST = "list";
     private static final String COMMAND_TODO = "todo";
@@ -13,6 +15,39 @@ public class Duke {
      */
     private static void printHorizontalLines() {
         System.out.println("    ____________________________________________________________");
+    }
+
+    /**
+     * Shows welcome message to user.
+     */
+    private static void showWelcomeMessage() {
+        printHorizontalLines();
+        System.out.println("     Hello! I'm Duke");
+        System.out.println("     What can I do for you?");
+        printHorizontalLines();
+        System.out.println();
+    }
+
+    /**
+     * Shows the goodbye message and exits the runtime.
+     */
+    private static void exitProgram() {
+        System.out.println("     Bye. Hope to see you again soon!");
+        printHorizontalLines();
+        System.exit(0);
+    }
+
+    /**
+     * Prompts for the command and reads the text entered by the user.
+     *
+     * @return Line entered by the user.
+     */
+    private static String getUserInput() {
+        String userCommand = SCANNER.nextLine();
+        while (userCommand.trim().isEmpty()) {
+            userCommand = SCANNER.nextLine();
+        }
+        return userCommand;
     }
 
     /**
@@ -110,6 +145,23 @@ public class Duke {
     }
 
     /**
+     * Shows usage instruction for all commands.
+     */
+    private static void showUsageInfoForAllCommands() {
+        showUsageInfoForListCommand();
+        printHorizontalLines();
+        showUsageInfoForTodoCommand();
+        printHorizontalLines();
+        showUsageInfoForDeadlineCommand();
+        printHorizontalLines();
+        showUsageInfoForEventCommand();
+        printHorizontalLines();
+        showUsageInfoForDoneCommand();
+        printHorizontalLines();
+        showUsageInfoForByeCommand();
+    }
+
+    /**
      * Shows a message for a task that is marked as done.
      *
      * @param task Task to mark as done.
@@ -122,9 +174,9 @@ public class Duke {
     /**
      * Returns the integer that is parsed from the string
      *
-     * @param input Input to be checked if it is an integer
-     * @return If valid integer: integer itself
-     *         Else: -1,
+     * @param input Input to be checked if it is an integer.
+     * @return If valid integer: integer itself.
+     *         Else: -1.
      */
     private static int checkValidInteger(String input) {
         try {
@@ -135,22 +187,14 @@ public class Duke {
     }
 
     public static void main(String[] args) {
-        printHorizontalLines();
-        System.out.println("     Hello! I'm Duke");
-        System.out.println("     What can I do for you?");
-        printHorizontalLines();
-        System.out.println();
+        showWelcomeMessage();
 
         Task[] tasks = new Task[100];
         int tasksCount = 0;
         Scanner in = new Scanner(System.in);
 
         while (true) {
-            String userCommand = in.nextLine();
-
-            while (userCommand.trim().isEmpty()) {
-                userCommand = in.nextLine();
-            }
+            String userCommand = getUserInput();
 
             String[] commandTypeAndParams = userCommand.trim().split(" ", 2);
             if (commandTypeAndParams.length != 2) {
@@ -163,93 +207,89 @@ public class Duke {
 
             switch (commandType) {
             case COMMAND_BYE:
-                if (commandParams.isEmpty()) {
-                    System.out.println("     Bye. Hope to see you again soon!");
-                    printHorizontalLines();
-                    System.exit(0);
-                } else {
+                if (!commandParams.isEmpty()) {
                     showInvalidCommandMessage(commandType);
                     showUsageInfoForByeCommand();
+                    break;
                 }
-                break;
+
+                exitProgram();
             case COMMAND_LIST:
-                if (commandParams.isEmpty()) {
-                    listTasks(tasks, tasksCount);
-                } else {
+                if (!commandParams.isEmpty()) {
                     showInvalidCommandMessage(commandType);
                     showUsageInfoForListCommand();
+                    break;
                 }
+
+                listTasks(tasks, tasksCount);
                 break;
             case COMMAND_TODO:
-                if (!commandParams.isEmpty()) {
-                    tasks[tasksCount] = new Todo(commandParams);
-                    tasksCount++;
-                    showTaskAddedMessage(tasks[tasksCount - 1], tasksCount);
-                } else {
+                if (commandParams.isEmpty()) {
                     showInvalidCommandMessage(commandType);
                     showUsageInfoForTodoCommand();
+                    break;
                 }
+
+                tasks[tasksCount] = new Todo(commandParams);
+                tasksCount++;
+                showTaskAddedMessage(tasks[tasksCount - 1], tasksCount);
                 break;
             case COMMAND_DEADLINE:
                 String[] taskDescAndTime = commandParams.trim().split(" /by ", 2);
-                if (taskDescAndTime.length == 2
-                        && !taskDescAndTime[0].isEmpty()
-                        && !taskDescAndTime[1].isEmpty()) {
-                    String taskDesc = taskDescAndTime[0].trim();
-                    String taskTime = taskDescAndTime[1].trim();
-                    tasks[tasksCount] = new Deadline(taskDesc, taskTime);
-                    tasksCount++;
-                    showTaskAddedMessage(tasks[tasksCount - 1], tasksCount);
-                } else {
+
+                if (taskDescAndTime.length != 2
+                        || taskDescAndTime[0].isEmpty()
+                        || taskDescAndTime[1].isEmpty()) {
                     showInvalidCommandMessage(commandType);
                     showUsageInfoForDeadlineCommand();
+                    break;
                 }
+
+                String taskDesc = taskDescAndTime[0].trim();
+                String taskTime = taskDescAndTime[1].trim();
+                tasks[tasksCount] = new Deadline(taskDesc, taskTime);
+                tasksCount++;
+                showTaskAddedMessage(tasks[tasksCount - 1], tasksCount);
                 break;
             case COMMAND_EVENT:
                 taskDescAndTime = commandParams.trim().split(" /at ", 2);
-                if (taskDescAndTime.length == 2
-                        && !taskDescAndTime[0].isEmpty()
-                        && !taskDescAndTime[1].isEmpty()) {
-                    String taskDesc = taskDescAndTime[0].trim();
-                    String taskTime = taskDescAndTime[1].trim();
-                    tasks[tasksCount] = new Event(taskDesc, taskTime);
-                    tasksCount++;
-                    showTaskAddedMessage(tasks[tasksCount - 1], tasksCount);
-                } else {
+
+                if (taskDescAndTime.length != 2
+                        || taskDescAndTime[0].isEmpty()
+                        || taskDescAndTime[1].isEmpty()) {
                     showInvalidCommandMessage(commandType);
                     showUsageInfoForEventCommand();
+                    break;
                 }
+
+                taskDesc = taskDescAndTime[0].trim();
+                taskTime = taskDescAndTime[1].trim();
+                tasks[tasksCount] = new Event(taskDesc, taskTime);
+                tasksCount++;
+                showTaskAddedMessage(tasks[tasksCount - 1], tasksCount);
                 break;
             case COMMAND_DONE:
                 String[]  split = commandParams.trim().split(" ");
-                if (split.length == 1 && !split[0].isEmpty()) {
-                    int taskDoneIndex = checkValidInteger(split[0]) - 1;
-                    if (0 <= taskDoneIndex && taskDoneIndex < tasksCount) {
-                        tasks[taskDoneIndex].markAsDone();
-                        showTaskDoneMessage(tasks[taskDoneIndex]);
-                    } else {
-                        showInvalidCommandMessage(commandType);
-                        showUsageInfoForDoneCommand();
-                    }
-                } else {
+
+                if (split.length != 1 || split[0].isEmpty()) {
                     showInvalidCommandMessage(commandType);
                     showUsageInfoForDoneCommand();
+                    break;
                 }
+
+                int taskDoneIndex = checkValidInteger(split[0]) - 1;
+                if (taskDoneIndex < 0 || taskDoneIndex >= tasksCount) {
+                    showInvalidCommandMessage(commandType);
+                    showUsageInfoForDoneCommand();
+                    break;
+                }
+                tasks[taskDoneIndex].markAsDone();
+                showTaskDoneMessage(tasks[taskDoneIndex]);
                 break;
             default:
                 showInvalidCommandMessage(commandType);
                 printHorizontalLines();
-                showUsageInfoForListCommand();
-                printHorizontalLines();
-                showUsageInfoForTodoCommand();
-                printHorizontalLines();
-                showUsageInfoForDeadlineCommand();
-                printHorizontalLines();
-                showUsageInfoForEventCommand();
-                printHorizontalLines();
-                showUsageInfoForDoneCommand();
-                printHorizontalLines();
-                showUsageInfoForByeCommand();
+                showUsageInfoForAllCommands();
             }
 
             printHorizontalLines();
