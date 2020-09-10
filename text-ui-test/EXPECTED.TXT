@@ -1,5 +1,13 @@
+ ____  _      _  ___
+|  _ \| \    / |/   \
+| |_| |  \  /  |  _  |
+|____/|   \/   | | | |
+|  _ \| |\  /| | |_| |
+| |_| | | \/ | |     |
+|____/|_|    |_|\___/
+
     ____________________________________________________________
-     Hello! I'm Duke
+     Hello! I'm Bmo
      What can I do for you?
     ____________________________________________________________
 
@@ -9,6 +17,7 @@
 
     ____________________________________________________________
      Invalid command format: todo
+     ☹ OOPS!!! The description of a todo cannot be empty.
      todo: Adds a task without any date/time attached to it.
      Parameters: TASK_DESCRIPTION
      Example: todo borrow book
@@ -22,6 +31,7 @@
 
     ____________________________________________________________
      Invalid command format: deadline
+     ☹ OOPS!!! The description or due date/time of a deadline cannot be empty.
      deadline: Adds a task that need to be done before a specific date/time.
      Parameters: TASK_DESCRIPTION /by DATE/TIME
      Example: deadline return book /by Sunday
@@ -35,6 +45,7 @@
 
     ____________________________________________________________
      Invalid command format: done
+     ☹ OOPS!!! The index of a task needs to be within the range of the total number of tasks.
      done: Marks a task as done.
      Parameters: TASK_NUMBER
      Example: done 2
