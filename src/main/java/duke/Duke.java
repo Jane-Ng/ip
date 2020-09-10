@@ -1,3 +1,11 @@
+package duke;
+
+import duke.exception.DukeException;
+import duke.task.Deadline;
+import duke.task.Event;
+import duke.task.Task;
+import duke.task.Todo;
+
 import java.util.Scanner;
 
 public class Duke {
@@ -34,7 +42,7 @@ public class Duke {
     private static void showWelcomeMessage() {
         String logo = " ____  _      _  ___\n"
                 + "|  _ \\| \\    / |/   \\\n"
-                + "| |_| |  \\  /  |  _  | \n"
+                + "| |_| |  \\  /  |  _  |\n"
                 + "|____/|   \\/   | | | |\n"
                 + "|  _ \\| |\\  /| | |_| |\n"
                 + "| |_| | | \\/ | |     |\n"

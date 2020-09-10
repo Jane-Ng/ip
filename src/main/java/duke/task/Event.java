@@ -1,8 +1,10 @@
+package duke.task;
+
 public class Event extends Task {
     protected String at;
 
     /**
-     * Adds a new deadline task.
+     * Adds a new event task.
      *
      * @param description Description of task.
      * @param at Event time of task.
