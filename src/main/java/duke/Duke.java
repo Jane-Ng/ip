@@ -6,6 +6,7 @@ import duke.task.Event;
 import duke.task.Task;
 import duke.task.Todo;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Duke {
@@ -20,13 +21,12 @@ public class Duke {
     private static final String COMMAND_DEADLINE = "deadline";
     private static final String COMMAND_EVENT = "event";
     private static final String COMMAND_DONE = "done";
+    private static final String COMMAND_DELETE = "delete";
 
     private static final String DEADLINE_TIME_PREFIX = " /by ";
     private static final String EVENT_TIME_PREFIX = " /at ";
 
-    private static final int MAX_TASKS = 100;
-
-    private static Task[] tasks = new Task[MAX_TASKS];
+    private static ArrayList<Task> tasks = new ArrayList<>();
     private static int taskCount = 0;
 
     /**
@@ -97,6 +97,9 @@ public class Duke {
             break;
         case COMMAND_DONE:
             executeMarkTaskDone(commandType, commandArgs);
+            break;
+        case COMMAND_DELETE:
+            executeDeleteTask(commandType, commandArgs);
             break;
         default:
             showInvalidCommandMessage(commandType);
@@ -182,8 +185,8 @@ public class Duke {
             return;
         }
         System.out.println(INDENTATION + "Here are the tasks in your list:");
-        for (int i = 0; i < taskCount; i++) {
-            System.out.println("     " + (i + 1) + "." + tasks[i]);
+        for (Task t : tasks) {
+            System.out.println("     " + (tasks.indexOf(t) + 1) + "." + t);
         }
     }
 
@@ -212,9 +215,9 @@ public class Duke {
      * @param taskDesc Description of the task.
      */
     private static void addTodoTask(String taskDesc) {
-        tasks[taskCount] = new Todo(taskDesc);
+        tasks.add(new Todo(taskDesc));
         taskCount++;
-        showTaskAddedMessage(tasks[taskCount - 1]);
+        showTaskAddedMessage(tasks.get(taskCount - 1));
     }
 
     /**
@@ -244,9 +247,9 @@ public class Duke {
      * @param taskTime Due date/time of the task.
      */
     private static void addDeadlineTask(String taskDesc, String taskTime) {
-        tasks[taskCount] = new Deadline(taskDesc, taskTime);
+        tasks.add(new Deadline(taskDesc, taskTime));
         taskCount++;
-        showTaskAddedMessage(tasks[taskCount - 1]);
+        showTaskAddedMessage(tasks.get(taskCount - 1));
     }
 
     /**
@@ -276,9 +279,9 @@ public class Duke {
      * @param taskTime Date/time of the task.
      */
     private static void addEventTask(String taskDesc, String taskTime) {
-        tasks[taskCount] = new Event(taskDesc, taskTime);
+        tasks.add(new Event(taskDesc, taskTime));
         taskCount++;
-        showTaskAddedMessage(tasks[taskCount - 1]);
+        showTaskAddedMessage(tasks.get(taskCount - 1));
     }
 
     /**
@@ -301,7 +304,7 @@ public class Duke {
             showInvalidCommandMessage(commandType);
             System.out.println(INDENTATION + "\u2639 OOPS!!! The index of a task needs to be an integer.");
             showUsageInfoForDoneCommand();
-        } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
+        } catch (IndexOutOfBoundsException | NullPointerException e) {
             showInvalidCommandMessage(commandType);
             System.out.println(INDENTATION
                     + "\u2639 OOPS!!! The index of a task needs to be within the range of the total number of tasks.");
@@ -317,11 +320,56 @@ public class Duke {
     /**
      * Marks a task as done.
      *
-     * @param taskDoneIndex Index of the task to mark as done
+     * @param taskDoneIndex Index of the task to mark as done.
      */
-    private static void markTaskDone(int taskDoneIndex) {
-        tasks[taskDoneIndex].markAsDone();
-        showTaskDoneMessage(tasks[taskDoneIndex]);
+    private static void markTaskDone(int taskDoneIndex) throws IndexOutOfBoundsException, NullPointerException {
+        tasks.get(taskDoneIndex).markAsDone();
+        showTaskDoneMessage(tasks.get(taskDoneIndex));
+    }
+
+    /**
+     * Requests to delete a task from the list.
+     *
+     * @param commandType Command type entered by the user.
+     * @param commandArgs Command arguments entered by the user.
+     */
+    private static void executeDeleteTask(String commandType, String commandArgs) {
+        try {
+            String[]  split = commandArgs.trim().split(" ");
+
+            if (split.length != 1 || split[0].isEmpty()) {
+                throw new DukeException();
+            }
+
+            int taskDeleteIndex = Integer.parseInt(split[0]) - 1;
+            deleteTask(taskDeleteIndex);
+        } catch (NumberFormatException e) {
+            showInvalidCommandMessage(commandType);
+            System.out.println(INDENTATION + "\u2639 OOPS!!! The index of a task needs to be an integer.");
+            showUsageInfoForDeleteCommand();
+        } catch (IndexOutOfBoundsException | NullPointerException e) {
+            showInvalidCommandMessage(commandType);
+            System.out.println(INDENTATION
+                    + "\u2639 OOPS!!! The index of a task needs to be within the range of the total number of tasks.");
+            showUsageInfoForDeleteCommand();
+        } catch (DukeException e) {
+            showInvalidCommandMessage(commandType);
+            System.out.println(INDENTATION
+                    + "\u2639 OOPS!!! The index of a task is missing or there are too many arguments.");
+            showUsageInfoForDeleteCommand();
+        }
+    }
+
+    /**
+     * Deletes a task from the list.
+     *
+     * @param taskDeleteIndex Index of the task to delete.
+     */
+    private static void deleteTask(int taskDeleteIndex) throws IndexOutOfBoundsException, NullPointerException {
+        Task task = tasks.get(taskDeleteIndex);
+        tasks.remove(taskDeleteIndex);
+        taskCount--;
+        showTaskDeleteMessage(task);
     }
 
     /**
@@ -347,6 +395,21 @@ public class Duke {
     private static void showTaskDoneMessage(Task task) {
         System.out.println("     Nice! I've marked this task as done:");
         System.out.println("       " + task);
+    }
+
+    /**
+     * Shows a message for a task that is deleted.
+     *
+     * @param task Task to delete.
+     */
+    private static void showTaskDeleteMessage(Task task) {
+        System.out.println(INDENTATION + "Noted! I've removed this task:");
+        System.out.println(INDENTATION + "  " + task);
+        if (taskCount == 0 || taskCount == 1) {
+            System.out.println(INDENTATION + "Now you have " + taskCount + " task in the list.");
+            return;
+        }
+        System.out.println(INDENTATION + "Now you have " + taskCount + " tasks in the list.");
     }
 
     /**
@@ -412,6 +475,15 @@ public class Duke {
     }
 
     /**
+     * Shows 'delete' command usage instruction.
+     */
+    private static void showUsageInfoForDeleteCommand() {
+        System.out.println(INDENTATION + "delete: Deletes a task.");
+        System.out.println(INDENTATION + "Parameters: TASK_NUMBER");
+        System.out.println(INDENTATION + "Example: delete 2");
+    }
+
+    /**
      * Shows usage instruction for all commands.
      */
     private static void showUsageInfoForAllCommands() {
@@ -424,6 +496,8 @@ public class Duke {
         showUsageInfoForEventCommand();
         printHorizontalLines();
         showUsageInfoForDoneCommand();
+        printHorizontalLines();
+        showUsageInfoForDeleteCommand();
         printHorizontalLines();
         showUsageInfoForByeCommand();
     }
