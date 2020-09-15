@@ -28,10 +28,19 @@ public class Task {
      *
      * @return Tick or X symbols.
      */
+
     public String getStatusIcon() {
         return (isDone ? "\u2713" : "\u2718"); //return tick or X symbols
     }
 
+    /**
+     * Returns the status number of the task.
+     *
+     * @return 1 or 0.
+     */
+    public String getStatusNumber() {
+        return (isDone ? "1" : "0"); //return 1 or 0
+    }
     /**
      * Marks a task as done.
      */
@@ -42,5 +51,9 @@ public class Task {
     @Override
     public String toString() {
         return "[" + getStatusIcon() + "] " + description;
+    }
+
+    public String toFileFormat() {
+        return getStatusNumber() + " | " + description;
     }
 }

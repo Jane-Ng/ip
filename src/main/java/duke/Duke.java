@@ -6,6 +6,11 @@ import duke.task.Event;
 import duke.task.Task;
 import duke.task.Todo;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Duke {
@@ -21,13 +26,19 @@ public class Duke {
     private static final String COMMAND_EVENT = "event";
     private static final String COMMAND_DONE = "done";
 
+    private static final String FILE_TODO = "T";
+    private static final String FILE_DEADLINE = "D";
+    private static final String FILE_EVENT = "E";
+
     private static final String DEADLINE_TIME_PREFIX = " /by ";
     private static final String EVENT_TIME_PREFIX = " /at ";
+    private static final String FILE_PREFIX = " \\| ";
 
-    private static final int MAX_TASKS = 100;
-
-    private static Task[] tasks = new Task[MAX_TASKS];
+    private static ArrayList<Task> tasks = new ArrayList<>();
     private static int taskCount = 0;
+
+    private static final String dirPath = "./data";
+    private static final String filePath = "./data/duke.txt";
 
     /**
      * Prints horizontal lines.
@@ -50,6 +61,7 @@ public class Duke {
         System.out.println(logo);
         printHorizontalLines();
         System.out.println(INDENTATION + "Hello! I'm Bmo");
+        listTasks();
         System.out.println(INDENTATION + "What can I do for you?");
         printHorizontalLines();
         System.out.println();
@@ -182,8 +194,8 @@ public class Duke {
             return;
         }
         System.out.println(INDENTATION + "Here are the tasks in your list:");
-        for (int i = 0; i < taskCount; i++) {
-            System.out.println("     " + (i + 1) + "." + tasks[i]);
+        for (Task t : tasks) {
+            System.out.println("     " + (tasks.indexOf(t) + 1) + "." + t);
         }
     }
 
@@ -212,9 +224,10 @@ public class Duke {
      * @param taskDesc Description of the task.
      */
     private static void addTodoTask(String taskDesc) {
-        tasks[taskCount] = new Todo(taskDesc);
+        tasks.add(new Todo(taskDesc));
         taskCount++;
-        showTaskAddedMessage(tasks[taskCount - 1]);
+        showTaskAddedMessage(tasks.get(taskCount - 1));
+        writeToFile();
     }
 
     /**
@@ -244,9 +257,10 @@ public class Duke {
      * @param taskTime Due date/time of the task.
      */
     private static void addDeadlineTask(String taskDesc, String taskTime) {
-        tasks[taskCount] = new Deadline(taskDesc, taskTime);
+        tasks.add(new Deadline(taskDesc, taskTime));
         taskCount++;
-        showTaskAddedMessage(tasks[taskCount - 1]);
+        showTaskAddedMessage(tasks.get(taskCount - 1));
+        writeToFile();
     }
 
     /**
@@ -276,9 +290,10 @@ public class Duke {
      * @param taskTime Date/time of the task.
      */
     private static void addEventTask(String taskDesc, String taskTime) {
-        tasks[taskCount] = new Event(taskDesc, taskTime);
+        tasks.add(new Event(taskDesc, taskTime));
         taskCount++;
-        showTaskAddedMessage(tasks[taskCount - 1]);
+        showTaskAddedMessage(tasks.get(taskCount - 1));
+        writeToFile();
     }
 
     /**
@@ -301,7 +316,7 @@ public class Duke {
             showInvalidCommandMessage(commandType);
             System.out.println(INDENTATION + "\u2639 OOPS!!! The index of a task needs to be an integer.");
             showUsageInfoForDoneCommand();
-        } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
+        } catch (IndexOutOfBoundsException | NullPointerException e) {
             showInvalidCommandMessage(commandType);
             System.out.println(INDENTATION
                     + "\u2639 OOPS!!! The index of a task needs to be within the range of the total number of tasks.");
@@ -320,8 +335,9 @@ public class Duke {
      * @param taskDoneIndex Index of the task to mark as done
      */
     private static void markTaskDone(int taskDoneIndex) {
-        tasks[taskDoneIndex].markAsDone();
-        showTaskDoneMessage(tasks[taskDoneIndex]);
+        tasks.get(taskDoneIndex).markAsDone();
+        showTaskDoneMessage(tasks.get(taskDoneIndex));
+        writeToFile();
     }
 
     /**
@@ -345,8 +361,8 @@ public class Duke {
      * @param task Task to mark as done.
      */
     private static void showTaskDoneMessage(Task task) {
-        System.out.println("     Nice! I've marked this task as done:");
-        System.out.println("       " + task);
+        System.out.println(INDENTATION + "Nice! I've marked this task as done:");
+        System.out.println(INDENTATION + "  " + task);
     }
 
     /**
@@ -428,7 +444,102 @@ public class Duke {
         showUsageInfoForByeCommand();
     }
 
-    public static void main(String[] args) {
+    /**
+     * Check if the directory exists
+     */
+    private static void checkDirExist() {
+        File dataDir = new File(dirPath);
+        boolean dirExists = dataDir.exists();
+        boolean dirCreated = false;
+        if (!dirExists) {
+            dirCreated = dataDir.mkdir();
+        }
+        if (dirCreated) {
+            System.out.println("Directory created successfully");
+        }
+    }
+
+    /**
+     * Check if the file exists.
+     *
+     * @return File that is being requested.
+     */
+    private static File checkFileExist() throws IOException {
+        File dukeFile = new File(filePath);
+        boolean fileExists = dukeFile.exists();
+        boolean fileCreated = false;
+        if (!fileExists) {
+            fileCreated = dukeFile.createNewFile();
+        }
+        if (fileCreated) {
+            System.out.println("File created successfully");
+        }
+        return dukeFile;
+    }
+
+    /**
+     * Load data from the text file.
+     *
+     * @param file File to load data from.
+     */
+    private static void readFromFile(File file) {
+        try {
+            Scanner reader = new Scanner(file);
+            while (reader.hasNext()) {
+                String data = reader.nextLine();
+                String[] dataParts = data.split(FILE_PREFIX);
+                switch (dataParts[0]) {
+                case FILE_TODO:
+                    tasks.add(new Todo(dataParts[2]));
+                    taskCount++;
+                    if (dataParts[1].equals("1")) {
+                        tasks.get(taskCount - 1).markAsDone();
+                    }
+                    break;
+                case FILE_DEADLINE:
+                    tasks.add(new Deadline(dataParts[2], dataParts[3]));
+                    taskCount++;
+                    if (dataParts[1].equals("1")) {
+                        tasks.get(taskCount - 1).markAsDone();
+                    }
+                    break;
+                case FILE_EVENT:
+                    tasks.add(new Event(dataParts[2], dataParts[3]));
+                    taskCount++;
+                    if (dataParts[1].equals("1")) {
+                        tasks.get(taskCount - 1).markAsDone();
+                    }
+                    break;
+                default:
+                    System.out.println("Task type not found.");
+                }
+            }
+            reader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found.");
+        }
+    }
+
+    /**
+     * Write updated task list to file.
+     */
+    private static void writeToFile() {
+        try {
+            FileWriter file = new FileWriter(filePath);
+            for (Task task : tasks) {
+                file.write(task.toFileFormat() + "\n");
+            }
+            file.close();
+        } catch (IOException e) {
+            System.out.println("Error finding the file.");
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        checkDirExist();
+        File file = checkFileExist();
+        readFromFile(file);
+
         showWelcomeMessage();
         boolean isExit = false;
 
