@@ -6,6 +6,11 @@ import duke.task.Event;
 import duke.task.Task;
 import duke.task.Todo;
 
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -23,11 +28,19 @@ public class Duke {
     private static final String COMMAND_DONE = "done";
     private static final String COMMAND_DELETE = "delete";
 
+    private static final String FILE_TODO = "T";
+    private static final String FILE_DEADLINE = "D";
+    private static final String FILE_EVENT = "E";
+
     private static final String DEADLINE_TIME_PREFIX = " /by ";
     private static final String EVENT_TIME_PREFIX = " /at ";
+    private static final String FILE_PREFIX = " \\| ";
 
     private static ArrayList<Task> tasks = new ArrayList<>();
     private static int taskCount = 0;
+
+    private static final String dirPath = "./data";
+    private static final String filePath = "./data/duke.txt";
 
     /**
      * Prints horizontal lines.
@@ -50,6 +63,7 @@ public class Duke {
         System.out.println(logo);
         printHorizontalLines();
         System.out.println(INDENTATION + "Hello! I'm Bmo");
+        listTasks();
         System.out.println(INDENTATION + "What can I do for you?");
         printHorizontalLines();
         System.out.println();
@@ -218,6 +232,7 @@ public class Duke {
         tasks.add(new Todo(taskDesc));
         taskCount++;
         showTaskAddedMessage(tasks.get(taskCount - 1));
+        writeToFile();
     }
 
     /**
@@ -250,6 +265,7 @@ public class Duke {
         tasks.add(new Deadline(taskDesc, taskTime));
         taskCount++;
         showTaskAddedMessage(tasks.get(taskCount - 1));
+        writeToFile();
     }
 
     /**
@@ -282,6 +298,7 @@ public class Duke {
         tasks.add(new Event(taskDesc, taskTime));
         taskCount++;
         showTaskAddedMessage(tasks.get(taskCount - 1));
+        writeToFile();
     }
 
     /**
@@ -393,8 +410,8 @@ public class Duke {
      * @param task Task to mark as done.
      */
     private static void showTaskDoneMessage(Task task) {
-        System.out.println("     Nice! I've marked this task as done:");
-        System.out.println("       " + task);
+        System.out.println(INDENTATION + "Nice! I've marked this task as done:");
+        System.out.println(INDENTATION + "  " + task);
     }
 
     /**
@@ -502,7 +519,102 @@ public class Duke {
         showUsageInfoForByeCommand();
     }
 
-    public static void main(String[] args) {
+    /**
+     * Check if the directory exists
+     */
+    private static void checkDirExist() {
+        File dataDir = new File(dirPath);
+        boolean dirExists = dataDir.exists();
+        boolean dirCreated = false;
+        if (!dirExists) {
+            dirCreated = dataDir.mkdir();
+        }
+        if (dirCreated) {
+            System.out.println("Directory created successfully");
+        }
+    }
+
+    /**
+     * Check if the file exists.
+     *
+     * @return File that is being requested.
+     */
+    private static File checkFileExist() throws IOException {
+        File dukeFile = new File(filePath);
+        boolean fileExists = dukeFile.exists();
+        boolean fileCreated = false;
+        if (!fileExists) {
+            fileCreated = dukeFile.createNewFile();
+        }
+        if (fileCreated) {
+            System.out.println("File created successfully");
+        }
+        return dukeFile;
+    }
+
+    /**
+     * Load data from the text file.
+     *
+     * @param file File to load data from.
+     */
+    private static void readFromFile(File file) {
+        try {
+            Scanner reader = new Scanner(file);
+            while (reader.hasNext()) {
+                String data = reader.nextLine();
+                String[] dataParts = data.split(FILE_PREFIX);
+                switch (dataParts[0]) {
+                case FILE_TODO:
+                    tasks.add(new Todo(dataParts[2]));
+                    taskCount++;
+                    if (dataParts[1].equals("1")) {
+                        tasks.get(taskCount - 1).markAsDone();
+                    }
+                    break;
+                case FILE_DEADLINE:
+                    tasks.add(new Deadline(dataParts[2], dataParts[3]));
+                    taskCount++;
+                    if (dataParts[1].equals("1")) {
+                        tasks.get(taskCount - 1).markAsDone();
+                    }
+                    break;
+                case FILE_EVENT:
+                    tasks.add(new Event(dataParts[2], dataParts[3]));
+                    taskCount++;
+                    if (dataParts[1].equals("1")) {
+                        tasks.get(taskCount - 1).markAsDone();
+                    }
+                    break;
+                default:
+                    System.out.println("Task type not found.");
+                }
+            }
+            reader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found.");
+        }
+    }
+
+    /**
+     * Write updated task list to file.
+     */
+    private static void writeToFile() {
+        try {
+            FileWriter file = new FileWriter(filePath);
+            for (Task task : tasks) {
+                file.write(task.toFileFormat() + "\n");
+            }
+            file.close();
+        } catch (IOException e) {
+            System.out.println("Error finding the file.");
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        checkDirExist();
+        File file = checkFileExist();
+        readFromFile(file);
+
         showWelcomeMessage();
         boolean isExit = false;
 
