@@ -387,6 +387,7 @@ public class Duke {
         tasks.remove(taskDeleteIndex);
         taskCount--;
         showTaskDeleteMessage(task);
+        writeToFile();
     }
 
     /**
