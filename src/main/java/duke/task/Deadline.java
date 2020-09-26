@@ -1,6 +1,7 @@
 package duke.task;
 
 public class Deadline extends Task {
+    public static final String PREFIX = "D";
     protected String by;
 
     /**
@@ -16,12 +17,12 @@ public class Deadline extends Task {
 
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + by + ")";
+        return "[" + PREFIX + "]" + super.toString() + " (by: " + by + ")";
     }
 
     @Override
     public String toFileFormat() {
-        return "D | " + super.toFileFormat() + " | " + by;
+        return PREFIX + " | " + super.toFileFormat() + " | " + by;
     }
 }
 

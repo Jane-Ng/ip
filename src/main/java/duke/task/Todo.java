@@ -1,6 +1,8 @@
 package duke.task;
 
 public class Todo extends Task {
+    public static final String PREFIX = "T";
+
     /**
      * Adds a new todo task.
      *
@@ -12,11 +14,11 @@ public class Todo extends Task {
 
     @Override
     public String toString() {
-        return "[T]" + super.toString();
+        return "[" + PREFIX + "]" + super.toString();
     }
 
     @Override
     public String toFileFormat() {
-        return "T | " + super.toFileFormat();
+        return PREFIX + " | " + super.toFileFormat();
     }
 }
