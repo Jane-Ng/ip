@@ -39,8 +39,8 @@ public class Duke {
     private static ArrayList<Task> tasks = new ArrayList<>();
     private static int taskCount = 0;
 
-    private static final String dirPath = "./data";
-    private static final String filePath = "./data/duke.txt";
+    private static final String dirPath = "data";
+    private static final String filePath = "data/duke.txt";
 
     /**
      * Prints horizontal lines.
@@ -63,7 +63,6 @@ public class Duke {
         System.out.println(logo);
         printHorizontalLines();
         System.out.println(INDENTATION + "Hello! I'm Bmo");
-        listTasks();
         System.out.println(INDENTATION + "What can I do for you?");
         printHorizontalLines();
         System.out.println();
@@ -319,17 +318,17 @@ public class Duke {
             markTaskDone(taskDoneIndex);
         } catch (NumberFormatException e) {
             showInvalidCommandMessage(commandType);
-            System.out.println(INDENTATION + "\u2639 OOPS!!! The index of a task needs to be an integer.");
+            System.out.println(INDENTATION + "\u2639 OOPS!!! The task number needs to be an integer.");
             showUsageInfoForDoneCommand();
         } catch (IndexOutOfBoundsException | NullPointerException e) {
             showInvalidCommandMessage(commandType);
             System.out.println(INDENTATION
-                    + "\u2639 OOPS!!! The index of a task needs to be within the range of the total number of tasks.");
+                    + "\u2639 OOPS!!! The task number needs to be within the range of the total number of tasks.");
             showUsageInfoForDoneCommand();
         } catch (DukeException e) {
             showInvalidCommandMessage(commandType);
             System.out.println(INDENTATION
-                    + "\u2639 OOPS!!! The index of a task is missing or there are too many arguments.");
+                    + "\u2639 OOPS!!! The task number is missing or there are too many arguments.");
             showUsageInfoForDoneCommand();
         }
     }
@@ -342,6 +341,7 @@ public class Duke {
     private static void markTaskDone(int taskDoneIndex) throws IndexOutOfBoundsException, NullPointerException {
         tasks.get(taskDoneIndex).markAsDone();
         showTaskDoneMessage(tasks.get(taskDoneIndex));
+        writeToFile();
     }
 
     /**
@@ -362,17 +362,17 @@ public class Duke {
             deleteTask(taskDeleteIndex);
         } catch (NumberFormatException e) {
             showInvalidCommandMessage(commandType);
-            System.out.println(INDENTATION + "\u2639 OOPS!!! The index of a task needs to be an integer.");
+            System.out.println(INDENTATION + "\u2639 OOPS!!! The task number needs to be an integer.");
             showUsageInfoForDeleteCommand();
         } catch (IndexOutOfBoundsException | NullPointerException e) {
             showInvalidCommandMessage(commandType);
             System.out.println(INDENTATION
-                    + "\u2639 OOPS!!! The index of a task needs to be within the range of the total number of tasks.");
+                    + "\u2639 OOPS!!! The task number needs to be within the range of the total number of tasks.");
             showUsageInfoForDeleteCommand();
         } catch (DukeException e) {
             showInvalidCommandMessage(commandType);
             System.out.println(INDENTATION
-                    + "\u2639 OOPS!!! The index of a task is missing or there are too many arguments.");
+                    + "\u2639 OOPS!!! The task number is missing or there are too many arguments.");
             showUsageInfoForDeleteCommand();
         }
     }
@@ -478,7 +478,7 @@ public class Duke {
      */
     private static void showUsageInfoForEventCommand() {
         System.out.println(INDENTATION
-                + "deadline: Adds a task that start at a specific time and ends at a specific time.");
+                + "event: Adds a task that start at a specific time and ends at a specific time.");
         System.out.println(INDENTATION + "Parameters: TASK_DESCRIPTION /at DATE/TIME");
         System.out.println(INDENTATION + "Example: event project meeting /at Mon 2-4pm");
     }
