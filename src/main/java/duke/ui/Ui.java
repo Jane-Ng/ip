@@ -103,4 +103,15 @@ public class Ui {
         out.println(INDENTATION + "Now you have " + taskCount + " tasks in the list.");
     }
 
+    public void showTaskFound(ArrayList<Task> tasks, int taskCount) {
+        if (taskCount == 0) {
+            out.println(INDENTATION + "There are no matching tasks in your list.");
+            return;
+        }
+        out.println(INDENTATION + "Here are the matching tasks in your list:");
+        for (Task t : tasks) {
+            out.println("     " + (tasks.indexOf(t) + 1) + "." + t);
+        }
+    }
+
 }

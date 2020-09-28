@@ -7,6 +7,7 @@ import duke.commands.DeadlineCommand;
 import duke.commands.EventCommand;
 import duke.commands.DoneCommand;
 import duke.commands.DeleteCommand;
+import duke.commands.FindCommand;
 import duke.commands.ByeCommand;
 
 import duke.exception.DukeException;
@@ -32,6 +33,8 @@ public class Parser {
             return prepareDone(commandArgs);
         case DeleteCommand.COMMAND_WORD:
             return prepareDelete(commandArgs);
+        case FindCommand.COMMAND_WORD:
+            return prepareFind(commandArgs);
         case ByeCommand.COMMAND_WORD:
             return prepareBye(commandArgs);
         default:
@@ -137,6 +140,14 @@ public class Parser {
             throw new DukeException("     \u2639 OOPS!!! The task number needs to be an integer.\n"
                     + DeleteCommand.MESSAGE_USAGE);
         }
+    }
+
+    private static Command prepareFind(String commandArgs) throws DukeException {
+        if (commandArgs.isEmpty()) {
+            throw new DukeException("     \u2639 OOPS!!! The keyword to find is missing.\n"
+                    + FindCommand.MESSAGE_USAGE);
+        }
+        return new FindCommand(commandArgs.toLowerCase());
     }
 
     private static Command prepareBye(String commandArgs) throws DukeException {
