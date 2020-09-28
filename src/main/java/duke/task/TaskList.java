@@ -1,5 +1,6 @@
 package duke.task;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class TaskList {
@@ -27,6 +28,16 @@ public class TaskList {
 
     public ArrayList<Task> getAllTasks() {
         return tasks;
+    }
+
+    public ArrayList<Task> getDateTasks(LocalDate date) {
+        ArrayList<Task> dateTasks = new ArrayList<>();
+        for (Task t : tasks) {
+            if ((t instanceof Deadline || t instanceof Event) && t.date.equals(date)) {
+                dateTasks.add(t);
+            }
+        }
+        return dateTasks;
     }
 
     public void markTaskDone(int taskDoneIndex) {

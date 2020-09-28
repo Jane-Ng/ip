@@ -1,8 +1,11 @@
 package duke.task;
 
+import java.time.LocalDate;
+
 public class Task {
     protected String description;
     protected boolean isDone;
+    protected LocalDate date;
 
     /**
      * Adds a new task.
