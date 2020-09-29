@@ -13,7 +13,17 @@ import duke.exception.DukeException;
 
 import static duke.ui.Ui.DIVIDER;
 
+/**
+ * Parses user input
+ */
 public class Parser {
+    /**
+     * Parses user input into command for execution
+     *
+     * @param fullCommand full command user input string
+     * @return the command based on the user input
+     * @throws DukeException if the command is incorrect
+     */
     public static Command parse(String fullCommand) throws DukeException {
         String[] commandTypeAndArgs = splitCommandTypeAndArgs(fullCommand);
         String commandType = commandTypeAndArgs[0].trim().toLowerCase();
@@ -53,6 +63,12 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses the user input string as command type and command arguments.
+     *
+     * @param userCommand user input string to parse as command type and command arguments
+     * @return the command type and command arguments
+     */
     private static String[] splitCommandTypeAndArgs(String userCommand) {
         String[] commandTypeAndParams = userCommand.trim().split(" ", 2);
         if (commandTypeAndParams.length != 2) {
@@ -61,6 +77,13 @@ public class Parser {
         return commandTypeAndParams;
     }
 
+    /**
+     * Parses arguments in the context of the list command.
+     *
+     * @param commandArgs full command args string
+     * @return the prepared command
+     * @throws DukeException if the command argument is invalid
+     */
     private static Command prepareList(String commandArgs) throws DukeException {
         if (!commandArgs.isEmpty()) {
             throw new DukeException("     \u2639 OOPS!!! The command list should not have any arguments.\n"
@@ -69,6 +92,13 @@ public class Parser {
         return new ListCommand();
     }
 
+    /**
+     * Parses arguments in the context of the todo command.
+     *
+     * @param commandArgs full command args string
+     * @return the prepared command
+     * @throws DukeException if the command argument is invalid
+     */
     private static Command prepareTodo(String commandArgs) throws DukeException {
         if (commandArgs.isEmpty()) {
             throw new DukeException("     \u2639 OOPS!!! The description of a todo cannot be empty.\n"
@@ -77,6 +107,13 @@ public class Parser {
         return new TodoCommand(commandArgs);
     }
 
+    /**
+     * Parses arguments in the context of the deadline command.
+     *
+     * @param commandArgs full command args string
+     * @return the prepared command
+     * @throws DukeException if the command argument is invalid
+     */
     private static Command prepareDeadline(String commandArgs) throws DukeException {
         try {
             String[] taskDescAndTime = commandArgs.trim().split(DeadlineCommand.COMMAND_PREFIX, 2);
@@ -90,6 +127,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses arguments in the context of the event command.
+     *
+     * @param commandArgs full command args string
+     * @return the prepared command
+     * @throws DukeException if the command argument is invalid
+     */
     private static Command prepareEvent(String commandArgs) throws DukeException {
         try {
             String[] taskDescAndTime = commandArgs.trim().split(EventCommand.COMMAND_PREFIX, 2);
@@ -103,6 +147,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses arguments in the context of the done command.
+     *
+     * @param commandArgs full command args string
+     * @return the prepared command
+     * @throws DukeException if the command argument is invalid
+     */
     private static Command prepareDone(String commandArgs) throws DukeException {
         try {
             String[] split = commandArgs.trim().split(" ");
@@ -121,6 +172,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses arguments in the context of the delete command.
+     *
+     * @param commandArgs full command args string
+     * @return the prepared command
+     * @throws DukeException if the command argument is invalid
+     */
     private static Command prepareDelete(String commandArgs) throws DukeException {
         try {
             String[] split = commandArgs.trim().split(" ");
@@ -139,6 +197,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses arguments in the context of the bye command.
+     *
+     * @param commandArgs full command args string
+     * @return the prepared command
+     * @throws DukeException if the command argument is invalid
+     */
     private static Command prepareBye(String commandArgs) throws DukeException {
         if (!commandArgs.isEmpty()) {
             throw new DukeException("     \u2639 OOPS!!! The command bye should not have any arguments.\n"

@@ -6,6 +6,9 @@ import duke.task.Task;
 import duke.task.TaskList;
 import duke.ui.Ui;
 
+/**
+ * Deletes a task from the task list using the index specified by the user.
+ */
 public class DeleteCommand extends Command {
     public static final String COMMAND_WORD = "delete";
 
@@ -19,6 +22,9 @@ public class DeleteCommand extends Command {
         this.taskDeleteIndex = taskDeleteIndex;
     }
 
+    /**
+     * @throws DukeException if {@code taskDeleteIndex} is not in range of the total number of tasks.
+     */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws DukeException {
         try {

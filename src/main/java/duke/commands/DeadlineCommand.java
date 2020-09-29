@@ -1,11 +1,15 @@
 package duke.commands;
 
+import duke.exception.DukeException;
 import duke.storage.Storage;
 import duke.task.Deadline;
 import duke.task.Task;
 import duke.task.TaskList;
 import duke.ui.Ui;
 
+/**
+ * Adds a deadline task to the task list.
+ */
 public class DeadlineCommand extends Command {
     public static final String COMMAND_WORD = "deadline";
 
@@ -23,7 +27,7 @@ public class DeadlineCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) {
+    public void execute(TaskList tasks, Ui ui, Storage storage) throws DukeException {
         tasks.addTask(task);
         int taskCount = tasks.getTaskCount();
         ui.showTaskAdded(tasks.getTask(taskCount - 1), taskCount);
