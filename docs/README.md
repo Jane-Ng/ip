@@ -189,6 +189,7 @@ Duke data are saved in the hard disk automatically after any command that change
 --------------------------------------------------------------------------------------------------------------------
 
 ## Command summary
+
 Action | Format, Examples
 --------|------------------
 **Bye** | `bye`
