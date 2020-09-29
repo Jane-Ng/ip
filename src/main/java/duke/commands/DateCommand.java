@@ -15,7 +15,7 @@ public class DateCommand extends Command {
     public static final String COMMAND_WORD = "date";
 
     public static final String MESSAGE_USAGE = "     date: Displays deadlines/events occurring on a specific date.\n"
-            + "     Parameters: DATE[yyyy-mm-dd]\n"
+            + "     Parameters: DATE(yyyy-MM-dd)\n"
             + "     Example: date 2020-12-15";
 
     private final LocalDate date;

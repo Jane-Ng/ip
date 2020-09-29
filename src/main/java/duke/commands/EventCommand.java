@@ -20,7 +20,7 @@ public class EventCommand extends Command {
 
     public static final String MESSAGE_USAGE =
             "     event: Adds a task that starts at a specific date and time and ends at a specific date and time.\n"
-            + "     Parameters: TASK_DESCRIPTION /at DATE[yyyy-mm-dd] START_TIME[HHmm]-END_TIME[HHmm]\n"
+            + "     Parameters: TASK_DESCRIPTION /at DATE(yyyy-MM-dd) START_TIME(HHmm)-END_TIME(HHmm)\n"
             + "     Example: event project meeting /at 2020-12-15 1800-2000";
 
     private final Task task;

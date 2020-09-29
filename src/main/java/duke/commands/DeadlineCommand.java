@@ -20,7 +20,7 @@ public class DeadlineCommand extends Command {
 
     public static final String MESSAGE_USAGE =
             "     deadline: Adds a task that needs to be done before a specific date and time.\n"
-            + "     Parameters: TASK_DESCRIPTION /by DATE[yyyy-mm-dd] TIME[HHmm]\n"
+            + "     Parameters: TASK_DESCRIPTION /by DATE(yyyy-MM-dd) TIME(HHmm)\n"
             + "     Example: deadline return book /by 2020-10-15 1800";
 
     private final Task task;
