@@ -103,4 +103,15 @@ public class Ui {
         out.println(INDENTATION + "Now you have " + taskCount + " tasks in the list.");
     }
 
+    public void showTaskDate(ArrayList<Task> tasks, int taskCount) {
+        if (taskCount == 0) {
+            out.println(INDENTATION + "There are no tasks occurring on this date.");
+            return;
+        }
+        out.println(INDENTATION + "Here are the tasks occurring on this date:");
+        for (Task t : tasks) {
+            out.println("     " + (tasks.indexOf(t) + 1) + "." + t);
+        }
+    }
+
 }

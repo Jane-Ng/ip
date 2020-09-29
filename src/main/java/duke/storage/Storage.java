@@ -10,6 +10,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -50,16 +53,22 @@ public class Storage {
                     }
                     break;
                 case Deadline.PREFIX:
-                    String by = dataParts[3];
-                    tasks.add(new Deadline(description, by));
+                    String[] dateTime = dataParts[3].split(" ", 2);
+                    LocalDate taskDate = LocalDate.parse(dateTime[0]);
+                    LocalTime taskTime = LocalTime.parse(dateTime[1], DateTimeFormatter.ofPattern("HHmm"));
+                    tasks.add(new Deadline(description, taskDate, taskTime));
                     taskCount++;
                     if (status.equals("1")) {
                         tasks.get(taskCount - 1).markAsDone();
                     }
                     break;
                 case Event.PREFIX:
-                    String at = dataParts[3];
-                    tasks.add(new Event(description, at));
+                    dateTime = dataParts[3].split(" ", 2);
+                    taskDate = LocalDate.parse(dateTime[0]);
+                    String[] time = dateTime[1].trim().split("-", 2);
+                    LocalTime taskStartTime = LocalTime.parse(time[0].trim(), DateTimeFormatter.ofPattern("HHmm"));
+                    LocalTime taskEndTime = LocalTime.parse(time[1].trim(), DateTimeFormatter.ofPattern("HHmm"));
+                    tasks.add(new Event(description, taskDate, taskStartTime, taskEndTime));
                     taskCount++;
                     if (status.equals("1")) {
                         tasks.get(taskCount - 1).markAsDone();
