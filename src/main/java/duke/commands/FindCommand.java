@@ -3,11 +3,13 @@ package duke.commands;
 import duke.storage.Storage;
 import duke.task.Task;
 import duke.task.TaskList;
-import duke.task.Todo;
 import duke.ui.Ui;
 
 import java.util.ArrayList;
 
+/**
+ * Finds all tasks in the task list with the keyword and display to the user.
+ */
 public class FindCommand extends Command {
     public static final String COMMAND_WORD = "find";
 

@@ -20,7 +20,17 @@ import java.time.format.DateTimeParseException;
 
 import static duke.ui.Ui.DIVIDER;
 
+/**
+ * Parses user input
+ */
 public class Parser {
+    /**
+     * Parses user input into command for execution
+     *
+     * @param fullCommand full command user input string
+     * @return the command based on the user input
+     * @throws DukeException if the command is incorrect
+     */
     public static Command parse(String fullCommand) throws DukeException {
         String[] commandTypeAndArgs = splitCommandTypeAndArgs(fullCommand);
         String commandType = commandTypeAndArgs[0].trim().toLowerCase();
@@ -60,10 +70,20 @@ public class Parser {
                     + DIVIDER + "\n"
                     + DeleteCommand.MESSAGE_USAGE + "\n"
                     + DIVIDER + "\n"
+                    + DateCommand.MESSAGE_USAGE + "\n"
+                    + DIVIDER + "\n"
+                    + FindCommand.MESSAGE_USAGE + "\n"
+                    + DIVIDER + "\n"
                     + ByeCommand.MESSAGE_USAGE);
         }
     }
 
+    /**
+     * Parses the user input string as command type and command arguments.
+     *
+     * @param userCommand user input string to parse as command type and command arguments
+     * @return the command type and command arguments
+     */
     private static String[] splitCommandTypeAndArgs(String userCommand) {
         String[] commandTypeAndParams = userCommand.trim().split(" ", 2);
         if (commandTypeAndParams.length != 2) {
@@ -72,6 +92,13 @@ public class Parser {
         return commandTypeAndParams;
     }
 
+    /**
+     * Parses arguments in the context of the list command.
+     *
+     * @param commandArgs full command args string
+     * @return the prepared command
+     * @throws DukeException if the command argument is invalid
+     */
     private static Command prepareList(String commandArgs) throws DukeException {
         if (!commandArgs.isEmpty()) {
             throw new DukeException("     \u2639 OOPS!!! The command list should not have any arguments.\n"
@@ -80,6 +107,13 @@ public class Parser {
         return new ListCommand();
     }
 
+    /**
+     * Parses arguments in the context of the todo command.
+     *
+     * @param commandArgs full command args string
+     * @return the prepared command
+     * @throws DukeException if the command argument is invalid
+     */
     private static Command prepareTodo(String commandArgs) throws DukeException {
         if (commandArgs.isEmpty()) {
             throw new DukeException("     \u2639 OOPS!!! The description of a todo cannot be empty.\n"
@@ -88,6 +122,13 @@ public class Parser {
         return new TodoCommand(commandArgs);
     }
 
+    /**
+     * Parses arguments in the context of the deadline command.
+     *
+     * @param commandArgs full command args string
+     * @return the prepared command
+     * @throws DukeException if the command argument is invalid
+     */
     private static Command prepareDeadline(String commandArgs) throws DukeException {
         try {
             String[] args = commandArgs.split(DeadlineCommand.DATE_TIME_PREFIX, 2);
@@ -107,6 +148,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses arguments in the context of the event command.
+     *
+     * @param commandArgs full command args string
+     * @return the prepared command
+     * @throws DukeException if the command argument is invalid
+     */
     private static Command prepareEvent(String commandArgs) throws DukeException {
         try {
             String[] args = commandArgs.split(EventCommand.DATE_TIME_PREFIX, 2);
@@ -130,6 +178,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses arguments in the context of the done command.
+     *
+     * @param commandArgs full command args string
+     * @return the prepared command
+     * @throws DukeException if the command argument is invalid
+     */
     private static Command prepareDone(String commandArgs) throws DukeException {
         try {
             String[] args = commandArgs.split(" ");
@@ -148,6 +203,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses arguments in the context of the delete command.
+     *
+     * @param commandArgs full command args string
+     * @return the prepared command
+     * @throws DukeException if the command argument is invalid
+     */
     private static Command prepareDelete(String commandArgs) throws DukeException {
         try {
             String[] args = commandArgs.split(" ");
@@ -166,6 +228,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses arguments in the context of the date command.
+     *
+     * @param commandArgs full command args string
+     * @return the prepared command
+     * @throws DukeException if the command argument is invalid
+     */
     private static Command prepareDate(String commandArgs) throws DukeException {
         try {
             if (commandArgs.isEmpty()) {
@@ -181,6 +250,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses arguments in the context of the find command.
+     *
+     * @param commandArgs full command args string
+     * @return the prepared command
+     * @throws DukeException if the command argument is invalid
+     */
     private static Command prepareFind(String commandArgs) throws DukeException {
         if (commandArgs.isEmpty()) {
             throw new DukeException("     \u2639 OOPS!!! The keyword to find is missing.\n"
@@ -189,6 +265,13 @@ public class Parser {
         return new FindCommand(commandArgs.toLowerCase());
     }
 
+    /**
+     * Parses arguments in the context of the bye command.
+     *
+     * @param commandArgs full command args string
+     * @return the prepared command
+     * @throws DukeException if the command argument is invalid
+     */
     private static Command prepareBye(String commandArgs) throws DukeException {
         if (!commandArgs.isEmpty()) {
             throw new DukeException("     \u2639 OOPS!!! The command bye should not have any arguments.\n"

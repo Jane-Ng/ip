@@ -8,6 +8,9 @@ import duke.ui.Ui;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+/**
+ * Lists all tasks in the task list occurring on a specific date to the user.
+ */
 public class DateCommand extends Command {
     public static final String COMMAND_WORD = "date";
 

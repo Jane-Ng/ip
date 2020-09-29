@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Storage {
+    /** Prefix used for getting data from storage file */
     private static final String FILE_PREFIX = " \\| ";
 
     public final String dirPath;
@@ -27,6 +28,12 @@ public class Storage {
         this.filePath = filePath;
     }
 
+    /**
+     * Loads the task list data from the storage file.
+     *
+     * @return the task list data
+     * @throws DukeException if the file does not exist
+     */
     public ArrayList<Task> load() throws DukeException {
         if (!checkDirExists(dirPath) || !checkFileExists(filePath)) {
             throw new DukeException();
@@ -80,13 +87,18 @@ public class Storage {
             }
             reader.close();
         } catch (FileNotFoundException e) {
-            System.out.println("File not found.");
+            throw new DukeException();
         }
 
         return tasks;
     }
 
-    public void save(ArrayList<Task> tasks) {
+    /**
+     * Saves the {@code tasks} data to the storage file.
+     *
+     * @throws DukeException if there are errors writing to file
+     */
+    public void save(ArrayList<Task> tasks) throws DukeException {
         try {
             FileWriter file = new FileWriter(filePath);
             for (Task task : tasks) {
@@ -94,10 +106,17 @@ public class Storage {
             }
             file.close();
         } catch (IOException e) {
-            System.out.println("Error writing to file.");
+            throw new DukeException("Error writing to file.");
         }
     }
 
+    /**
+     * Checks if the directory exists, creates one if it does not exists.
+     *
+     * @param dirPath path to the directory
+     * @return true if the directory exists or is created
+     *         false if the directory does not exist and is not created
+     */
     private boolean checkDirExists(String dirPath) {
         File dataDir = new File(dirPath);
         boolean dirExists = dataDir.exists();
@@ -111,10 +130,20 @@ public class Storage {
         return (dirExists || dirCreated);
     }
 
+    /**
+     * Creates the directory.
+     */
     private boolean createDir(File dataDir) {
         return dataDir.mkdir();
     }
 
+    /**
+     * Checks if the storage file exists, creates one if it does not exists.
+     *
+     * @param filePath path to the storage file
+     * @return true if the storage file exists or is created
+     *         false if the storage file does not exist and is not created
+     */
     private boolean checkFileExists(String filePath) {
         File dataFile = new File(filePath);
         boolean fileExists = dataFile.exists();
@@ -128,6 +157,9 @@ public class Storage {
         return (fileExists || fileCreated);
     }
 
+    /**
+     * Creates the storage file.
+     */
     private boolean createFile(File dataFile) {
         try {
             return dataFile.createNewFile();

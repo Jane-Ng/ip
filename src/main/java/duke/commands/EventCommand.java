@@ -1,5 +1,6 @@
 package duke.commands;
 
+import duke.exception.DukeException;
 import duke.storage.Storage;
 import duke.task.Event;
 import duke.task.Task;
@@ -9,6 +10,9 @@ import duke.ui.Ui;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+/**
+ * Adds an event task to the task list.
+ */
 public class EventCommand extends Command {
     public static final String COMMAND_WORD = "event";
 
@@ -25,8 +29,11 @@ public class EventCommand extends Command {
         this.task = new Event(description, date, startTime, endTime);
     }
 
+    /**
+     * @throws DukeException if there is error saving tasks to storage file
+     */
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) {
+    public void execute(TaskList tasks, Ui ui, Storage storage) throws DukeException {
         tasks.addTask(task);
         int taskCount = tasks.getTaskCount();
         ui.showTaskAdded(tasks.getTask(taskCount - 1), taskCount);

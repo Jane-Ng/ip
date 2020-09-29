@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Represents an Event task in the task list.
+ */
 public class Event extends Task {
     public static final String PREFIX = "E";
     protected LocalTime startTime;
@@ -32,6 +35,9 @@ public class Event extends Task {
                 + endTime.format((DateTimeFormatter.ofPattern("hh:mma"))) +")";
     }
 
+    /**
+     * Formats the event task data as a string to be saved in the storage file.
+     */
     @Override
     public String toFileFormat() {
         return PREFIX + " | " + super.toFileFormat() + " | " + date + " "

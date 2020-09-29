@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Represents a Deadline task in the task list.
+ */
 public class Deadline extends Task {
     public static final String PREFIX = "D";
     protected LocalTime time;
@@ -28,6 +31,9 @@ public class Deadline extends Task {
                 + time.format((DateTimeFormatter.ofPattern("hh:mma"))) + ")";
     }
 
+    /**
+     * Formats the deadline task data as a string to be saved in the storage file.
+     */
     @Override
     public String toFileFormat() {
         return PREFIX + " | " + super.toFileFormat() + " | " + date + " "

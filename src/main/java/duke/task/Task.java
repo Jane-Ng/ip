@@ -2,6 +2,9 @@ package duke.task;
 
 import java.time.LocalDate;
 
+/**
+ * Represents a Task in the task list.
+ */
 public class Task {
     protected String description;
     protected boolean isDone;
@@ -19,8 +22,6 @@ public class Task {
 
     /**
      * Returns the description of the task.
-     *
-     * @return Description of the task.
      */
     public String getDescription() {
         return description;
@@ -31,7 +32,6 @@ public class Task {
      *
      * @return Tick or X symbols.
      */
-
     public String getStatusIcon() {
         return (isDone ? "\u2713" : "\u2718"); //return tick or X symbols
     }
@@ -44,6 +44,7 @@ public class Task {
     public String getStatusNumber() {
         return (isDone ? "1" : "0"); //return 1 or 0
     }
+
     /**
      * Marks a task as done.
      */
@@ -56,6 +57,9 @@ public class Task {
         return "[" + getStatusIcon() + "] " + description;
     }
 
+    /**
+     * Formats the task data as a string to be saved in the storage file.
+     */
     public String toFileFormat() {
         return getStatusNumber() + " | " + description;
     }

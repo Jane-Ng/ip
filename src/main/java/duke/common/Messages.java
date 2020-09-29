@@ -1,5 +1,8 @@
 package duke.common;
 
+/**
+ * Container for common user messages.
+ */
 public class Messages {
     public static final String MESSAGE_LOGO =
             " ____  _      _  ___\n"

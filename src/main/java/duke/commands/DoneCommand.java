@@ -5,6 +5,9 @@ import duke.storage.Storage;
 import duke.task.TaskList;
 import duke.ui.Ui;
 
+/**
+ * Marks a task in the task list as done using the index specified by the user.
+ */
 public class DoneCommand extends Command {
     public static final String COMMAND_WORD = "done";
 
@@ -18,6 +21,9 @@ public class DoneCommand extends Command {
         this.taskDoneIndex = taskDoneIndex;
     }
 
+    /**
+     * @throws DukeException if {@code taskDoneIndex} is not in range of the total number of tasks.
+     */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws DukeException {
         try {
