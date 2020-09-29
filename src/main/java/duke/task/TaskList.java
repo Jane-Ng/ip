@@ -48,4 +48,14 @@ public class TaskList {
         tasks.remove(taskDeleteIndex);
     }
 
+    public ArrayList<Task> findTask(String keyword) {
+        ArrayList<Task> keywordTasks = new ArrayList<>();
+        for (Task t : tasks) {
+            if (t.description.toLowerCase().contains(keyword)) {
+                keywordTasks.add(t);
+            }
+        }
+        return keywordTasks;
+    }
+
 }
