@@ -7,10 +7,16 @@ import duke.commands.DeadlineCommand;
 import duke.commands.EventCommand;
 import duke.commands.DoneCommand;
 import duke.commands.DeleteCommand;
+import duke.commands.DateCommand;
 import duke.commands.FindCommand;
 import duke.commands.ByeCommand;
 
 import duke.exception.DukeException;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import static duke.ui.Ui.DIVIDER;
 
@@ -33,6 +39,8 @@ public class Parser {
             return prepareDone(commandArgs);
         case DeleteCommand.COMMAND_WORD:
             return prepareDelete(commandArgs);
+        case DateCommand.COMMAND_WORD:
+            return prepareDate(commandArgs);
         case FindCommand.COMMAND_WORD:
             return prepareFind(commandArgs);
         case ByeCommand.COMMAND_WORD:
@@ -82,41 +90,57 @@ public class Parser {
 
     private static Command prepareDeadline(String commandArgs) throws DukeException {
         try {
-            String[] taskDescAndTime = commandArgs.trim().split(DeadlineCommand.COMMAND_PREFIX, 2);
-            String taskDesc = taskDescAndTime[0].trim();
-            String taskTime = taskDescAndTime[1].trim();
-            return new DeadlineCommand(taskDesc, taskTime);
+            String[] args = commandArgs.split(DeadlineCommand.DATE_TIME_PREFIX, 2);
+            String taskDesc = args[0].trim();
+            String[] dateTime = args[1].trim().split(" ", 2);
+            LocalDate taskDate = LocalDate.parse(dateTime[0].trim());
+            LocalTime taskTime = LocalTime.parse(dateTime[1].trim(), DateTimeFormatter.ofPattern("HHmm"));
+            return new DeadlineCommand(taskDesc, taskDate, taskTime);
         } catch (IndexOutOfBoundsException e) {
             throw new DukeException(
                     "     \u2639 OOPS!!! The description or due date/time of a deadline cannot be empty.\n"
                     + DeadlineCommand.MESSAGE_USAGE);
+        } catch (DateTimeParseException e) {
+            throw new DukeException(
+                    "     \u2639 OOPS!!! The date and time format of a deadline is wrong.\n"
+                            + DeadlineCommand.MESSAGE_USAGE);
         }
     }
 
     private static Command prepareEvent(String commandArgs) throws DukeException {
         try {
-            String[] taskDescAndTime = commandArgs.trim().split(EventCommand.COMMAND_PREFIX, 2);
-            String taskDesc = taskDescAndTime[0].trim();
-            String taskTime = taskDescAndTime[1].trim();
-            return new EventCommand(taskDesc, taskTime);
+            String[] args = commandArgs.split(EventCommand.DATE_TIME_PREFIX, 2);
+            String taskDesc = args[0].trim();
+
+            String[] dateTime = args[1].trim().split(" ", 2);
+            LocalDate taskDate = LocalDate.parse(dateTime[0].trim());
+
+            String[] time = dateTime[1].trim().split("-", 2);
+            LocalTime taskStartTime = LocalTime.parse(time[0].trim(), DateTimeFormatter.ofPattern("HHmm"));
+            LocalTime taskEndTime = LocalTime.parse(time[1].trim(), DateTimeFormatter.ofPattern("HHmm"));
+            return new EventCommand(taskDesc, taskDate, taskStartTime, taskEndTime);
         } catch (IndexOutOfBoundsException e) {
             throw new DukeException(
                     "     \u2639 OOPS!!! The description or event date/time of an event cannot be empty.\n"
+                            + EventCommand.MESSAGE_USAGE);
+        } catch (DateTimeParseException e) {
+            throw new DukeException(
+                    "     \u2639 OOPS!!! The date and time format of an event is wrong.\n"
                             + EventCommand.MESSAGE_USAGE);
         }
     }
 
     private static Command prepareDone(String commandArgs) throws DukeException {
         try {
-            String[] split = commandArgs.trim().split(" ");
+            String[] args = commandArgs.split(" ");
 
-            if (split.length != 1 || split[0].isEmpty()) {
+            if (args.length != 1 || args[0].isEmpty()) {
                 throw new DukeException(
                         "     \u2639 OOPS!!! The task number is missing or there are too many arguments.\n"
                         + DoneCommand.MESSAGE_USAGE);
             }
 
-            int taskDoneIndex = Integer.parseInt(split[0]) - 1;
+            int taskDoneIndex = Integer.parseInt(args[0].trim()) - 1;
             return new DoneCommand(taskDoneIndex);
         } catch (NumberFormatException e) {
             throw new DukeException("     \u2639 OOPS!!! The task number needs to be an integer.\n"
@@ -126,19 +150,34 @@ public class Parser {
 
     private static Command prepareDelete(String commandArgs) throws DukeException {
         try {
-            String[] split = commandArgs.trim().split(" ");
+            String[] args = commandArgs.split(" ");
 
-            if (split.length != 1 || split[0].isEmpty()) {
+            if (args.length != 1 || args[0].isEmpty()) {
                 throw new DukeException(
                         "     \u2639 OOPS!!! The task number is missing or there are too many arguments.\n"
                                 + DeleteCommand.MESSAGE_USAGE);
             }
 
-            int taskDeleteIndex = Integer.parseInt(split[0]) - 1;
+            int taskDeleteIndex = Integer.parseInt(args[0].trim()) - 1;
             return new DeleteCommand(taskDeleteIndex);
         } catch (NumberFormatException e) {
             throw new DukeException("     \u2639 OOPS!!! The task number needs to be an integer.\n"
                     + DeleteCommand.MESSAGE_USAGE);
+        }
+    }
+
+    private static Command prepareDate(String commandArgs) throws DukeException {
+        try {
+            if (commandArgs.isEmpty()) {
+                throw new DukeException("     \u2639 OOPS!!! The date is missing.\n"
+                        + DateCommand.MESSAGE_USAGE);
+            }
+            LocalDate taskDate = LocalDate.parse(commandArgs);
+            return new DateCommand(taskDate);
+        } catch (DateTimeParseException e) {
+            throw new DukeException(
+                    "     \u2639 OOPS!!! The date format is wrong.\n"
+                            + DateCommand.MESSAGE_USAGE);
         }
     }
 

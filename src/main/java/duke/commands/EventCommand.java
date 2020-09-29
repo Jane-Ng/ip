@@ -6,20 +6,23 @@ import duke.task.Task;
 import duke.task.TaskList;
 import duke.ui.Ui;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 public class EventCommand extends Command {
     public static final String COMMAND_WORD = "event";
 
-    public static final String COMMAND_PREFIX = " /at ";
+    public static final String DATE_TIME_PREFIX = " /at ";
 
     public static final String MESSAGE_USAGE =
-            "     event: Adds a task that start at a specific time and ends at a specific time.\n"
-            + "     Parameters: TASK_DESCRIPTION /at DATE/TIME\n"
-            + "     Example: event project meeting /at Mon 2-4pm";
+            "     event: Adds a task that starts at a specific date and time and ends at a specific date and time.\n"
+            + "     Parameters: TASK_DESCRIPTION /at DATE[yyyy-mm-dd] START_TIME[HHmm]-END_TIME[HHmm]\n"
+            + "     Example: event project meeting /at 2020-12-15 1800-2000";
 
     private final Task task;
 
-    public EventCommand(String description, String at) {
-        this.task = new Event(description, at);
+    public EventCommand(String description, LocalDate date, LocalTime startTime, LocalTime endTime) {
+        this.task = new Event(description, date, startTime, endTime);
     }
 
     @Override
