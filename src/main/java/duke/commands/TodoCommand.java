@@ -23,6 +23,9 @@ public class TodoCommand extends Command {
         this.task = new Todo(description);
     }
 
+    /**
+     * @throws DukeException if there is error saving tasks to storage file
+     */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws DukeException {
         tasks.addTask(task);

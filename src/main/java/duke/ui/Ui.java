@@ -135,4 +135,32 @@ public class Ui {
         out.println(INDENTATION + "Now you have " + taskCount + " tasks in the list.");
     }
 
+    /**
+     * Shows a list of tasks that occurs on a specific date to the user.
+     */
+    public void showTaskDate(ArrayList<Task> tasks, int taskCount) {
+        if (taskCount == 0) {
+            out.println(INDENTATION + "There are no tasks occurring on this date.");
+            return;
+        }
+        out.println(INDENTATION + "Here are the tasks occurring on this date:");
+        for (Task t : tasks) {
+            out.println("     " + (tasks.indexOf(t) + 1) + "." + t);
+        }
+    }
+
+    /**
+     * Shows a list of tasks that has matching keyword to the user.
+     */
+    public void showTaskFound(ArrayList<Task> tasks, int taskCount) {
+        if (taskCount == 0) {
+            out.println(INDENTATION + "There are no matching tasks in your list.");
+            return;
+        }
+        out.println(INDENTATION + "Here are the matching tasks in your list:");
+        for (Task t : tasks) {
+            out.println("     " + (tasks.indexOf(t) + 1) + "." + t);
+        }
+    }
+
 }

@@ -1,5 +1,6 @@
 package duke.task;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 /**
@@ -62,6 +63,32 @@ public class TaskList {
      */
     public void deleteTask(int taskDeleteIndex) {
         tasks.remove(taskDeleteIndex);
+    }
+
+    /**
+     * Returns the task list that has tasks occurring on a specific date.
+     */
+    public ArrayList<Task> getDateTasks(LocalDate date) {
+        ArrayList<Task> dateTasks = new ArrayList<>();
+        for (Task t : tasks) {
+            if ((t instanceof Deadline || t instanceof Event) && t.date.equals(date)) {
+                dateTasks.add(t);
+            }
+        }
+        return dateTasks;
+    }
+
+    /**
+     * Returns the task list that has tasks with the keyword.
+     */
+    public ArrayList<Task> findTask(String keyword) {
+        ArrayList<Task> keywordTasks = new ArrayList<>();
+        for (Task t : tasks) {
+            if (t.description.toLowerCase().contains(keyword)) {
+                keywordTasks.add(t);
+            }
+        }
+        return keywordTasks;
     }
 
 }

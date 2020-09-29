@@ -1,26 +1,34 @@
 package duke.task;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
 /**
  * Represents a Deadline task in the task list.
  */
 public class Deadline extends Task {
     public static final String PREFIX = "D";
-    protected String by;
+    protected LocalTime time;
 
     /**
      * Adds a new deadline task.
      *
      * @param description Description of task.
-     * @param by Deadline time of task.
+     * @param date Deadline date of task.
+     * @param time Deadline time of task.
      */
-    public Deadline(String description, String by) {
+    public Deadline(String description, LocalDate date, LocalTime time) {
         super(description);
-        this.by = by;
+        this.date = date;
+        this.time = time;
     }
 
     @Override
     public String toString() {
-        return "[" + PREFIX + "]" + super.toString() + " (by: " + by + ")";
+        return "[" + PREFIX + "]" + super.toString() + " (by: "
+                + date.format(DateTimeFormatter.ofPattern("MMM dd yyyy")) + " "
+                + time.format((DateTimeFormatter.ofPattern("hh:mma"))) + ")";
     }
 
     /**
@@ -28,7 +36,8 @@ public class Deadline extends Task {
      */
     @Override
     public String toFileFormat() {
-        return PREFIX + " | " + super.toFileFormat() + " | " + by;
+        return PREFIX + " | " + super.toFileFormat() + " | " + date + " "
+                + time.format((DateTimeFormatter.ofPattern("HHmm")));
     }
 }
 
